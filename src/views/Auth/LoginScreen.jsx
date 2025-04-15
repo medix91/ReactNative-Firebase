@@ -1,10 +1,28 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { auth } from '../../firebase/firebaseConfig';
+import { signInWithEmailAndPassword  } from 'firebase/auth';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const handleLogin = async () => {
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Alert.alert('Erreur', 'L\'email est invalide');
+      return;
+    }
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      alert('Connexion réussie 🎉');
+      // navigation vers page profil par ex.
+      // navigation.navigate('Home');
+    } catch (error) {
+      alert('Erreur de connexion : ' + error.message);
+    }
+  };
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -43,7 +61,7 @@ export default function LoginScreen({ navigation }) {
         </View>
 
         {/* Bouton connexion */}
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Se connecter</Text>
         </TouchableOpacity>
 

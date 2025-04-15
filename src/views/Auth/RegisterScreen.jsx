@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
-
+import { auth } from '../../firebase/firebaseConfig';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 export default function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const handleRegister = async () => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert('Inscription réussie 🎉');
+      // navigation vers une autre page
+    } catch (error) {
+      alert('Erreur d’inscription : ' + error.message);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -52,7 +63,7 @@ export default function RegisterScreen({ navigation }) {
         </View>
 
         {/* Bouton inscription */}
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>S'inscrire</Text>
         </TouchableOpacity>
 
